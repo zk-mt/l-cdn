@@ -3,82 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locker | Repair Viewer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; min-height: 100vh; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        :root { font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism Effect */
+        .glass { 
+            background: rgba(30, 41, 59, 0.4); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .glass:focus-within { border-color: rgba(59, 130, 246, 0.5); }
+
+        /* Modern Input Design */
         input, textarea, select { 
-            background: rgba(15, 23, 42, 0.6) !important; 
+            background: rgba(15, 23, 42, 0.8) !important; 
             border: 1px solid #334155 !important;
             color: #f8fafc !important;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.75rem;
             width: 100%;
             outline: none;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            letter-spacing: -0.01em;
         }
-        input:focus, textarea:focus, select:focus { border-color: #60a5fa !important; ring: 2px #60a5fa; }
-        label { color: #94a3b8; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block; }
+
+        input:focus, textarea:focus, select:focus { 
+            border-color: #3b82f6 !important; 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        label { 
+            color: #64748b; 
+            font-size: 0.65rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            margin-bottom: 0.35rem; 
+            display: block; 
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="p-6">
-    <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-8 border-b border-slate-700 pb-6">
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto w-full flex-grow">
+        
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-slate-800 pb-6 gap-4">
             <div>
-                <label>Item to be Repaired</label>
-                <input type="text" id="field-item" class="text-2xl font-bold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0">
-                <p class="text-slate-500 text-xs mt-1">Report #<span id="display-report"></span> • Date: <span id="display-date"></span></p>
-            </div>
-            <button onclick="saveToFileMaker()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold transition shadow-lg shadow-blue-900/20">
-                Save Changes
-            </button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="space-y-6">
-                <div class="glass p-5 rounded-2xl">
-                    <h2 class="text-[10px] font-bold text-blue-500 uppercase mb-4 tracking-widest">Asset Details</h2>
-                    <div class="space-y-4">
-                        <div><label>Serial Number</label><input type="text" id="field-sn"></div>
-                        <div><label>Machine Number</label><input type="text" id="field-machine"></div>
-                        <div><label>Location</label><input type="text" id="field-location"></div>
-                        <div><label>Room #</label><input type="text" id="field-room"></div>
-                    </div>
+                <label for="field-item">Item to be Repaired</label>
+                <input type="text" id="field-item" class="text-3xl font-semibold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0 tracking-tight leading-tight">
+                <div class="flex gap-3 mt-1 text-slate-500 text-xs font-medium">
+                    <span>Report #<span id="display-report"></span></span>
+                    <span>&bull;</span>
+                    <span>Date: <span id="display-date"></span></span>
                 </div>
             </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex flex-col items-end">
+                    <label>Record Status</label>
+                    <select id="field-completed" class="w-32 py-1 text-xs font-bold uppercase">
+                        <option value="No">Pending</option>
+                        <option value="Yes">Completed</option>
+                    </select>
+                </div>
+                <button onclick="saveToFileMaker()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/40 active:scale-95">
+                    Save Changes
+                </button>
+            </div>
+        </header>
 
-            <div class="lg:col-span-2 space-y-6">
-                <div class="glass p-6 rounded-2xl">
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-4 space-y-6">
+                <section class="glass p-6 rounded-3xl">
+                    <h2 class="text-[10px] font-bold text-blue-500 uppercase mb-6 tracking-[0.15em]">Hardware Inventory</h2>
+                    
+                    <div class="space-y-5">
                         <div>
-                            <label>Type of Problem</label>
-                            <input type="text" id="field-problem-type">
+                            <label>Serial Number</label>
+                            <input type="text" id="field-sn" class="font-mono text-blue-200">
                         </div>
                         <div>
-                            <label>Status</label>
-                            <select id="field-completed">
-                                <option value="No">Pending</option>
-                                <option value="Yes">Completed</option>
-                            </select>
+                            <label>Machine Number</label>
+                            <input type="text" id="field-machine">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label>Location</label>
+                                <input type="text" id="field-location">
+                            </div>
+                            <div>
+                                <label>Room #</label>
+                                <input type="text" id="field-room">
+                            </div>
                         </div>
                     </div>
-                    <label>Description of Problem</label>
-                    <textarea id="field-description" rows="4"></textarea>
-                </div>
-
-                <div class="glass p-6 rounded-2xl border-l-4 border-green-500/50">
-                    <label>What has been done to fix the problem?</label>
-                    <textarea id="field-fix" rows="4"></textarea>
-                </div>
+                </section>
             </div>
-        </div>
+
+            <div class="lg:col-span-8 space-y-6">
+                <section class="glass p-6 rounded-3xl">
+                    <div class="mb-6">
+                        <label>Type of Problem</label>
+                        <input type="text" id="field-problem-type" class="font-medium">
+                    </div>
+                    
+                    <div>
+                        <label>Description of Problem</label>
+                        <textarea id="field-description" rows="5" class="resize-none"></textarea>
+                    </div>
+                </section>
+
+                <section class="glass p-6 rounded-3xl border-l-4 border-emerald-500/40">
+                    <label>Resolution Action & Notes</label>
+                    <textarea id="field-fix" rows="5" class="resize-none" placeholder="Detail the fix here..."></textarea>
+                </section>
+            </div>
+        </main>
     </div>
 
     <script>
+        // 1. DATA EXTRACTION
         const params = new URLSearchParams(window.location.search);
-        function getParam(name) { return decodeURIComponent(params.get(name) || ""); }
+        
+        function getParam(name) {
+            const value = params.get(name) || "";
+            return decodeURIComponent(value); 
+        }
 
-        // Populate Form
+        // 2. INITIALIZE FORM
         document.getElementById('field-item').value = getParam('item');
         document.getElementById('display-report').innerText = getParam('report');
         document.getElementById('display-date').innerText = getParam('date');
@@ -89,12 +167,14 @@
         document.getElementById('field-problem-type').value = getParam('problem');
         document.getElementById('field-description').value = getParam('description');
         document.getElementById('field-completed').value = getParam('completed');
+        // If you have a 'fix' parameter, add it here:
+        // document.getElementById('field-fix').value = getParam('fix');
 
-        // SAVE FUNCTION
+        // 3. FILEMAKER BRIDGE
         function saveToFileMaker() {
-            // Gather values into a JSON object
-            const data = {
-                reportNum: getParam('report'), // Use ID to find record
+            // Collect all data into a JSON object
+            const dataObject = {
+                reportNum: getParam('report'), // ID to find the record
                 item: document.getElementById('field-item').value,
                 sn: document.getElementById('field-sn').value,
                 machine: document.getElementById('field-machine').value,
@@ -102,15 +182,16 @@
                 room: document.getElementById('field-room').value,
                 problemType: document.getElementById('field-problem-type').value,
                 description: document.getElementById('field-description').value,
-                completed: document.getElementById('field-completed').value
+                completed: document.getElementById('field-completed').value,
+                fix: document.getElementById('field-fix').value
             };
 
-            // Call the FileMaker Script
-            // Syntax: FileMaker.PerformScript("ScriptName", "Parameter")
-            if (typeof FileMaker !== 'undefined') {
-                FileMaker.PerformScript("Locker_Save_Web_Update", JSON.stringify(data));
+            // Stringify and send to FileMaker
+            if (window.FileMaker) {
+                FileMaker.PerformScript("Locker_Save_Web_Update", JSON.stringify(dataObject));
             } else {
-                alert("FileMaker not detected. Run this in the Web Viewer.");
+                console.error("FileMaker Bridge not found. Are you in a Web Viewer?");
+                alert("Cannot save: FileMaker Bridge not detected.");
             }
         }
     </script>
