@@ -6,70 +6,112 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; min-height: 100vh; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        input, textarea, select { 
+            background: rgba(15, 23, 42, 0.6) !important; 
+            border: 1px solid #334155 !important;
+            color: #f8fafc !important;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #60a5fa !important; ring: 2px #60a5fa; }
+        label { color: #94a3b8; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block; }
     </style>
 </head>
 <body class="p-6">
-    <div class="max-w-5xl mx-auto" id="content">
-        <div class="flex justify-between items-start mb-8 border-b border-slate-700 pb-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b border-slate-700 pb-6">
             <div>
-                <h1 class="text-3xl font-extrabold text-blue-400 tracking-tight" id="view-item">Loading...</h1>
-                <p class="text-slate-400 text-sm mt-1">
-                    Report #<span id="view-report"></span> • <span id="view-date"></span>
-                </p>
+                <label>Item to be Repaired</label>
+                <input type="text" id="field-item" class="text-2xl font-bold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0">
+                <p class="text-slate-500 text-xs mt-1">Report #<span id="display-report"></span> • Date: <span id="display-date"></span></p>
             </div>
-            <div id="status-badge" class="px-4 py-1.5 rounded-lg text-xs font-bold uppercase border"></div>
+            <button onclick="saveToFileMaker()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold transition shadow-lg shadow-blue-900/20">
+                Save Changes
+            </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="space-y-6">
                 <div class="glass p-5 rounded-2xl">
-                    <h2 class="text-[10px] font-bold tracking-widest text-blue-500 uppercase mb-4">Technical Details</h2>
-                    <p class="mb-2"><span class="text-slate-500">SN:</span> <span id="view-sn" class="font-mono"></span></p>
-                    <p class="mb-2"><span class="text-slate-500">Machine:</span> <span id="view-machine"></span></p>
-                    <p class="mb-2"><span class="text-slate-500">Location:</span> <span id="view-location"></span></p>
-                    <p><span class="text-slate-500">Room:</span> <span id="view-room"></span></p>
+                    <h2 class="text-[10px] font-bold text-blue-500 uppercase mb-4 tracking-widest">Asset Details</h2>
+                    <div class="space-y-4">
+                        <div><label>Serial Number</label><input type="text" id="field-sn"></div>
+                        <div><label>Machine Number</label><input type="text" id="field-machine"></div>
+                        <div><label>Location</label><input type="text" id="field-location"></div>
+                        <div><label>Room #</label><input type="text" id="field-room"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="lg:col-span-2 space-y-6">
                 <div class="glass p-6 rounded-2xl">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-2" id="view-problem-type">Issue</h3>
-                    <p class="text-lg text-slate-100 leading-relaxed" id="view-description"></p>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label>Type of Problem</label>
+                            <input type="text" id="field-problem-type">
+                        </div>
+                        <div>
+                            <label>Status</label>
+                            <select id="field-completed">
+                                <option value="No">Pending</option>
+                                <option value="Yes">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label>Description of Problem</label>
+                    <textarea id="field-description" rows="4"></textarea>
+                </div>
+
+                <div class="glass p-6 rounded-2xl border-l-4 border-green-500/50">
+                    <label>What has been done to fix the problem?</label>
+                    <textarea id="field-fix" rows="4"></textarea>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Extract and Decode URL Parameters
         const params = new URLSearchParams(window.location.search);
-        
-        function getParam(name) {
-            const value = params.get(name) || "";
-            return decodeURIComponent(value); // This fixes the %20 and %2F issues
-        }
+        function getParam(name) { return decodeURIComponent(params.get(name) || ""); }
 
-        // Map Data to UI
-        document.getElementById('view-item').innerText = getParam('item');
-        document.getElementById('view-report').innerText = getParam('report');
-        document.getElementById('view-date').innerText = getParam('date');
-        document.getElementById('view-sn').innerText = getParam('sn');
-        document.getElementById('view-machine').innerText = getParam('machine');
-        document.getElementById('view-location').innerText = getParam('location');
-        document.getElementById('view-room').innerText = getParam('room');
-        document.getElementById('view-problem-type').innerText = "ISSUE: " + getParam('problem');
-        document.getElementById('view-description').innerText = getParam('description');
+        // Populate Form
+        document.getElementById('field-item').value = getParam('item');
+        document.getElementById('display-report').innerText = getParam('report');
+        document.getElementById('display-date').innerText = getParam('date');
+        document.getElementById('field-sn').value = getParam('sn');
+        document.getElementById('field-machine').value = getParam('machine');
+        document.getElementById('field-location').value = getParam('location');
+        document.getElementById('field-room').value = getParam('room');
+        document.getElementById('field-problem-type').value = getParam('problem');
+        document.getElementById('field-description').value = getParam('description');
+        document.getElementById('field-completed').value = getParam('completed');
 
-        // Handle Status Badge
-        const completed = getParam('completed');
-        const badge = document.getElementById('status-badge');
-        if (completed.toLowerCase() === 'yes') {
-            badge.innerText = 'COMPLETED';
-            badge.className += ' bg-green-500/10 text-green-400 border-green-500/50';
-        } else {
-            badge.innerText = 'PENDING';
-            badge.className += ' bg-amber-500/10 text-amber-400 border-amber-500/50';
+        // SAVE FUNCTION
+        function saveToFileMaker() {
+            // Gather values into a JSON object
+            const data = {
+                reportNum: getParam('report'), // Use ID to find record
+                item: document.getElementById('field-item').value,
+                sn: document.getElementById('field-sn').value,
+                machine: document.getElementById('field-machine').value,
+                location: document.getElementById('field-location').value,
+                room: document.getElementById('field-room').value,
+                problemType: document.getElementById('field-problem-type').value,
+                description: document.getElementById('field-description').value,
+                completed: document.getElementById('field-completed').value
+            };
+
+            // Call the FileMaker Script
+            // Syntax: FileMaker.PerformScript("ScriptName", "Parameter")
+            if (typeof FileMaker !== 'undefined') {
+                FileMaker.PerformScript("Locker_Save_Web_Update", JSON.stringify(data));
+            } else {
+                alert("FileMaker not detected. Run this in the Web Viewer.");
+            }
         }
     </script>
 </body>
