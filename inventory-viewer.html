@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Locker Pro | Tech Inventory</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -16,160 +16,263 @@
         :root { font-family: 'Inter', system-ui, sans-serif; }
         
         body { 
-            background: radial-gradient(circle at top right, #111827, #030712);
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: #f8fafc; 
             -webkit-font-smoothing: antialiased;
-            margin: 0; padding: 0;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0; 
+            padding: 0;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* Fixed-Width Sidebar vs Fluid Main to stop the 'jank' stretch */
+        /* Glassmorphism Main Panels */
         .glass-panel { 
-            background: rgba(17, 24, 39, 0.6); 
+            background: rgba(30, 41, 59, 0.4); 
             backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(148, 163, 184, 0.1); 
             border-radius: 1.25rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            padding: 1.75rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
+        /* Nested Glass Panels for clear zoning */
         .glass-sub-panel { 
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.08);
             border-radius: 1rem;
             padding: 1.25rem;
         }
 
-        /* Input styling: Sharp and consistent */
-        input, textarea, select { 
-            background: #030712 !important; 
-            border: 1px solid #1f2937 !important;
-            color: #f1f5f9 !important;
-            padding: 0.6rem 0.8rem !important;
+        .input-group { margin-bottom: 1.25rem; }
+
+        /* Modern Input Design - Editable State */
+        input:not(:read-only), textarea:not(:read-only), select:not(:read-only) { 
+            background: rgba(15, 23, 42, 0.8) !important; 
+            border: 1px solid #334155 !important;
+            color: #f8fafc !important;
+            padding: 0.65rem 0.9rem !important;
             border-radius: 0.5rem;
             width: 100%;
             outline: none;
-            font-size: 0.85rem !important;
             transition: all 0.2s ease;
+            font-size: 0.9rem !important;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
         }
 
-        input:focus { border-color: #3b82f6 !important; ring: 2px #3b82f6; }
+        input:not(:read-only):focus, textarea:not(:read-only):focus { 
+            border-color: #3b82f6 !important; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
 
+        /* Read-Only State (Looks like standard text) */
+        input:read-only, textarea:read-only {
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            color: #e2e8f0 !important;
+            padding: 0 !important;
+            width: 100%;
+            outline: none;
+            cursor: default;
+            font-size: 0.9rem !important;
+        }
+
+        /* Prevent resizing textareas when read-only */
+        textarea:read-only {
+            resize: none;
+        }
+
+        /* Label styling */
         label { 
-            color: #4b5563; 
-            font-size: 0.6rem; 
-            font-weight: 800; 
+            color: #94a3b8; 
+            font-size: 0.65rem; 
+            font-weight: 700; 
             text-transform: uppercase; 
-            letter-spacing: 0.1em; 
-            margin-bottom: 0.35rem; 
+            letter-spacing: 0.05em; 
+            margin-bottom: 0.45rem; 
             display: block; 
         }
 
-        .pane-title {
+        .list-label {
+            color: #94a3b8;
             font-size: 0.75rem;
-            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #3b82f6;
+            font-weight: 600;
+            width: 140px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .list-row {
+            display: flex;
+            align-items: baseline;
+            min-height: 1.5rem;
+        }
+
+        .pane-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #60a5fa;
             margin-bottom: 1.25rem;
         }
 
+        /* Management Icon Buttons */
         .management-btn {
             width: 36px; height: 36px;
-            border-radius: 10px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.5rem;
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.4);
             display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
             cursor: pointer;
         }
+        .management-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; color: white; }
+
+        /* Timeline for Device History */
+        .history-timeline { border-left: 2px dashed rgba(51, 65, 85, 0.8); padding-left: 1.5rem; margin-top: 1rem; position: relative; }
+        .timeline-dot { position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
     </style>
 </head>
-<body class="p-6">
-    <div class="max-w-[1600px] mx-auto">
+<body class="py-8">
+    <div class="max-w-6xl mx-auto w-full px-6 lg:px-12">
         
-        <header class="flex justify-between items-center mb-10 pb-6 border-b border-gray-800">
-            <div>
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-slate-800 pb-6 sticky top-0 bg-[#0f172a]/90 backdrop-blur-md z-50">
+            <div class="w-full md:w-auto">
                 <label>Asset Identity</label>
-                <input type="text" id="f1" class="text-3xl font-bold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0" placeholder="f1">
-                <p class="text-gray-500 text-xs mt-1 font-semibold uppercase tracking-widest">
-                    <span id="display-model">Model</span> &bull; <span id="display-serial">Serial</span>
+                <input type="text" id="f1" readonly class="text-3xl font-bold text-blue-400 !text-blue-400 w-full" placeholder="Asset Tag (f1)">
+                <p class="text-slate-500 text-sm mt-1 font-medium">
+                    <span id="display-model" class="text-slate-300">Unknown Model (f7)</span> &bull; <span id="display-serial" class="text-slate-300">No Serial (f2)</span>
                 </p>
             </div>
-            <button onclick="saveInventory()" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/40">
-                Save Asset Update
-            </button>
+            
+            <div class="flex gap-4 w-full md:w-auto">
+                <button id="editToggleBtn" onclick="toggleEditMode()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all border border-slate-600">
+                    Enable Editing
+                </button>
+                <button id="saveBtn" onclick="saveInventory()" style="display: none;" class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/40">
+                    Save Updates
+                </button>
+            </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
             
-            <div class="lg:col-span-3 glass-panel p-6">
-                <div class="flex justify-center py-6 mb-4">
-                    <svg class="w-32 h-32 text-gray-700" fill="currentColor" viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+            <div class="lg:col-span-5 glass-panel">
+                <div class="w-full flex justify-center mb-2">
+                    <img src="https://static.acer.com/up/Resource/Acer/Laptops/Chromebook_3100/photogallery/20210217/Chromebook-3100- Acer-photogallery-01.png" alt="Hardware Image" class="w-40 object-contain drop-shadow-xl opacity-90">
                 </div>
-                
                 <h2 class="pane-title">Device Information</h2>
-                <div class="space-y-4">
-                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">Asset Tag</span>
-                        <input type="text" id="f1_dup" class="text-right border-none bg-transparent p-0 w-24 focus:ring-0 text-blue-300">
+                <div class="space-y-3 text-slate-100 text-sm">
+                    <div class="list-row"><span class="list-label">Device Name:</span><input type="text" id="f3" readonly></div>
+                    <div class="list-row"><span class="list-label">OS Version:</span><input type="text" id="f15" readonly></div>
+                    <div class="list-row"><span class="list-label">CPU:</span><input type="text" id="f10" readonly></div>
+                    
+                    <div class="list-row">
+                        <span class="list-label">Memory:</span>
+                        <div class="flex gap-2 w-full"><input type="text" id="f11" readonly class="w-16"><span class="text-slate-500">GB</span></div>
                     </div>
-                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">SN</span>
-                        <input type="text" id="f2" class="text-right border-none bg-transparent p-0 w-32 focus:ring-0">
+                    
+                    <div class="list-row">
+                        <span class="list-label">Storage:</span>
+                        <div class="flex gap-2 w-full"><input type="text" id="f13" readonly class="w-16"><span class="text-slate-500">GB</span></div>
                     </div>
-                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">Platform</span>
-                        <input type="text" id="f6" class="text-right border-none bg-transparent p-0 w-24 focus:ring-0">
-                    </div>
-                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">RAM</span>
-                        <div class="flex justify-end"><input type="text" id="f11" class="w-10 text-right bg-transparent border-none p-0"><input type="text" id="f12" class="w-8 text-gray-600 bg-transparent border-none p-0"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-5 space-y-8">
-                <section class="glass-panel p-6">
-                    <h2 class="pane-title">Owner & Assignment</h2>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-blue-900/30 flex items-center justify-center text-blue-400 font-bold">U</div>
-                        <div class="flex-grow">
-                            <input type="text" id="f18" class="bg-transparent border-none p-0 font-bold text-lg w-full focus:ring-0" placeholder="f18">
-                            <p class="text-[10px] text-gray-500 uppercase font-bold"><span id="f16_txt">Building</span> &bull; <span id="f17_txt">Room</span></p>
+                    
+                    <div class="list-row"><span class="list-label">Serial Number:</span><input type="text" id="f2" readonly></div>
+                    <div class="list-row"><span class="list-label">Model:</span><input type="text" id="f7" readonly></div>
+                    <div class="list-row"><span class="list-label">Type:</span><input type="text" id="f5" readonly></div>
+                    <div class="list-row"><span class="list-label">Platform:</span><input type="text" id="f6" readonly></div>
+                    
+                    <div class="pt-4 mt-2 border-t border-slate-700/50 space-y-3 font-mono text-[11px]">
+                        <div class="list-row"><span class="list-label">IP Address:</span><input type="text" id="f27" readonly class="!text-emerald-400"></div>
+                        <div class="list-row"><span class="list-label">MAC (Wi-Fi):</span><input type="text" id="f28" readonly></div>
+                        <div class="list-row"><span class="list-label">MAC (Ethernet):</span><input type="text" id="f29" readonly></div>
+                        <div class="list-row"><span class="list-label">Thundermac:</span><input type="text" id="f31" readonly></div>
+                        <div class="flex flex-col mt-2">
+                            <span class="list-label mb-1">Chrome Device ID:</span>
+                            <textarea id="f30" readonly class="w-full text-[10px] text-slate-400" rows="2"></textarea>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label>First Name (f33)</label><input type="text" id="f33"></div>
-                        <div><label>Last Name (f34)</label><input type="text" id="f34"></div>
-                    </div>
-                </section>
-
-                <section class="glass-panel p-6 flex-grow">
-                    <h2 class="pane-title">Action Notes (f24)</h2>
-                    <textarea id="f24" rows="6" class="bg-black/40 border-gray-800 rounded-lg p-3 text-xs w-full resize-none"></textarea>
-                </section>
+                </div>
             </div>
 
-            <div class="lg:col-span-4 space-y-8">
-                <section class="glass-panel p-6">
-                    <h2 class="pane-title">Management Options</h2>
-                    <div class="flex gap-3">
-                        <div class="management-btn text-blue-400">&#x2699;</div>
-                        <div class="management-btn text-green-400">&#x2713;</div>
-                        <div class="management-btn text-yellow-400">&#x26A0;</div>
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <div class="glass-sub-panel flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div class="flex-grow w-full">
+                        <label>Assigned Owner (f18)</label>
+                        <input type="text" id="f18" readonly class="text-lg font-bold w-full" placeholder="Owner Name">
+                        <div class="flex gap-4 mt-3">
+                            <div class="flex-1"><label>Building (f16)</label><input type="text" id="f16" readonly placeholder="Building"></div>
+                            <div class="flex-1"><label>Room (f17)</label><input type="text" id="f17" readonly placeholder="Room"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section class="glass-sub-panel space-y-4">
+                        <h2 class="text-xs font-bold text-blue-500 uppercase mb-4 tracking-widest">Student Assignment</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="input-group mb-0"><label>First Name (f33)</label><input type="text" id="f33" readonly></div>
+                            <div class="input-group mb-0"><label>Last Name (f34)</label><input type="text" id="f34" readonly></div>
+                        </div>
+                        <div class="input-group mb-0"><label>Student ID (f35)</label><input type="text" id="f35" readonly></div>
+                    </section>
+
+                    <section class="glass-sub-panel space-y-4">
+                        <h2 class="pane-title mb-2">Lifecycle Details</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>Vendor (f9)</label><input type="text" id="f9" readonly></div>
+                            <div><label>Purchase Date (f21)</label><input type="text" id="f21" readonly></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>Cost (f19)</label><input type="text" id="f19" readonly></div>
+                            <div><label>PO# (f20)</label><input type="text" id="f20" readonly></div>
+                        </div>
+                        <div><label>Warranty (f22)</label><input type="text" id="f22" readonly></div>
+                    </section>
+                </div>
+
+                <section class="glass-sub-panel flex-grow flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="pane-title mb-0">Action History & Notes</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+                        <div class="space-y-4">
+                            <div class="history-timeline">
+                                <div class="timeline-dot"></div>
+                                <label>Latest Technician Action (f24)</label>
+                                <textarea id="f24" readonly rows="3" class="text-sm mt-1" placeholder="Action Notes..."></textarea>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label>General Administrative Notes (f25)</label>
+                            <textarea id="f25" readonly rows="3" class="text-sm h-full" placeholder="General asset notes..."></textarea>
+                        </div>
                     </div>
                 </section>
 
-                <section class="glass-panel p-6">
-                    <h2 class="pane-title">Lifecycle Details</h2>
-                    <div class="space-y-4">
-                        <div><label>Vendor (f9)</label><input type="text" id="f9"></div>
-                        <div><label>Purchase Date (f21)</label><input type="text" id="f21"></div>
-                        <div><label>PO Number (f20)</label><input type="text" id="f20"></div>
-                        <div><label>Warranty (f22)</label><input type="text" id="f22"></div>
+                <section class="flex gap-4">
+                    <div class="glass-sub-panel flex-grow flex items-center justify-between py-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Management Options</span>
+                        <div class="flex gap-2">
+                            <div class="management-btn text-blue-400" title="Future Action Decisions (f23)" onclick="alert('Decision required: f23.')">&#x2699;</div>
+                            <div class="management-btn" title="View Purchase Order (f20)" onclick="alert('Loading PO: f20.')">&#x2637;</div>
+                        </div>
+                    </div>
+                    <div class="glass-sub-panel py-3 px-4 flex flex-col justify-center">
+                        <label>Skyward Status (f32)</label>
+                        <input type="text" id="f32" readonly class="text-xs font-mono">
                     </div>
                 </section>
+                
             </div>
         </div>
     </div>
@@ -177,33 +280,68 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Populate fields f1 - f36
+        // Populate all 36 fields (f1 - f36)
         for(let i=1; i<=36; i++) {
-            const val = decodeURIComponent(params.get('f' + i) || "");
-            const el = document.getElementById('f' + i);
-            if(el) el.value = val;
-            
-            // Sync specific display-only elements
-            if(i === 1) { 
-                const dup = document.getElementById('f1_dup');
-                if(dup) dup.value = val;
+            const fieldId = 'f' + i;
+            const el = document.getElementById(fieldId);
+            if(el) {
+                el.value = decodeURIComponent(params.get(fieldId) || "");
             }
-            if(i === 16) { document.getElementById('f16_txt').innerText = val || "Building"; }
-            if(i === 17) { document.getElementById('f17_txt').innerText = val || "Room"; }
-            if(i === 7) { document.getElementById('display-model').innerText = val || "Model"; }
-            if(i === 2) { document.getElementById('display-serial').innerText = val || "Serial"; }
+        }
+
+        // Update non-editable header displays
+        document.getElementById('display-model').innerText = decodeURIComponent(params.get('f7') || "Unknown Model");
+        document.getElementById('display-serial').innerText = decodeURIComponent(params.get('f2') || "No Serial");
+
+        // Logic for toggling edit mode
+        let isEditing = false;
+        
+        // Define fields that should never be editable (e.g., metadata, system calculated fields)
+        const permanentlyReadonly = ['f36']; 
+
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            
+            const toggleBtn = document.getElementById('editToggleBtn');
+            const saveBtn = document.getElementById('saveBtn');
+
+            if (isEditing) {
+                toggleBtn.innerText = "Cancel Editing";
+                toggleBtn.className = "w-full md:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 py-3 rounded-lg font-semibold text-sm transition-all border border-slate-600";
+                saveBtn.style.display = "block";
+            } else {
+                toggleBtn.innerText = "Enable Editing";
+                toggleBtn.className = "w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all border border-slate-600";
+                saveBtn.style.display = "none";
+            }
+
+            // Loop through fields to toggle readonly attribute
+            for(let i=1; i<=36; i++) {
+                const fieldId = 'f' + i;
+                if (permanentlyReadonly.includes(fieldId)) continue;
+                
+                const el = document.getElementById(fieldId);
+                if (el && el.id !== 'f1') { // Keep primary identifier (f1) locked
+                    el.readOnly = !isEditing;
+                }
+            }
         }
 
         function saveInventory() {
             const payload = {};
             for(let i=1; i<=36; i++) {
-                const el = document.getElementById('f' + i);
-                if(el) payload['f' + i] = el.value;
+                const fieldId = 'f' + i;
+                const el = document.getElementById(fieldId);
+                if(el) payload[fieldId] = el.value;
             }
+
             if (window.FileMaker) {
                 FileMaker.PerformScript("Locker_Inventory_Update", JSON.stringify(payload));
+                // Optional: toggleEditMode() back to false after saving
+                toggleEditMode(); 
             } else {
-                alert("FileMaker Bridge not found.");
+                console.error("FileMaker Bridge not found.");
+                alert("Cannot save: Not run inside FileMaker Web Viewer.");
             }
         }
     </script>
