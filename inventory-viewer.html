@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Locker Pro | Tech Inventory</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -16,284 +16,194 @@
         :root { font-family: 'Inter', system-ui, sans-serif; }
         
         body { 
-            background: linear-gradient(135deg, #090e17 0%, #030407 100%);
+            background: radial-gradient(circle at top right, #111827, #030712);
             color: #f8fafc; 
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            margin: 0; 
-            padding: 0;
+            margin: 0; padding: 0;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Glassmorphism Main Panels */
+        /* Fixed-Width Sidebar vs Fluid Main to stop the 'jank' stretch */
         .glass-panel { 
-            background: rgba(18, 25, 38, 0.4); 
-            backdrop-filter: blur(16px); 
-            border: 1px solid rgba(59, 130, 246, 0.08); 
-            border-radius: 1.5rem;
-            padding: 1.75rem;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            background: rgba(17, 24, 39, 0.6); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* Nested Glass Panels for clear zoning */
         .glass-sub-panel { 
-            background: rgba(10, 15, 25, 0.6);
-            border: 1px solid rgba(59, 130, 246, 0.12);
-            border-radius: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
             padding: 1.25rem;
         }
 
-        .input-group { margin-bottom: 1.25rem; }
-
-        /* Modern Input Design */
+        /* Input styling: Sharp and consistent */
         input, textarea, select { 
-            background: rgba(5, 7, 12, 0.9) !important; 
-            border: 1px solid #2d3e50 !important;
-            color: #f8fafc !important;
-            padding: 0.65rem 0.9rem !important;
-            border-radius: 0.6rem;
+            background: #030712 !important; 
+            border: 1px solid #1f2937 !important;
+            color: #f1f5f9 !important;
+            padding: 0.6rem 0.8rem !important;
+            border-radius: 0.5rem;
             width: 100%;
             outline: none;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem !important;
+            font-size: 0.85rem !important;
+            transition: all 0.2s ease;
         }
 
-        input:focus, textarea:focus, select:focus { 
-            border-color: #3b82f6 !important; 
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
+        input:focus { border-color: #3b82f6 !important; ring: 2px #3b82f6; }
 
-        /* Label and Text styling */
         label { 
-            color: #94a3b8; 
-            font-size: 0.65rem; 
-            font-weight: 700; 
+            color: #4b5563; 
+            font-size: 0.6rem; 
+            font-weight: 800; 
             text-transform: uppercase; 
-            letter-spacing: 0.075em; 
-            margin-bottom: 0.45rem; 
+            letter-spacing: 0.1em; 
+            margin-bottom: 0.35rem; 
             display: block; 
         }
 
-        .list-label {
-            color: #94a3b8;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            width: 140px;
-            display: inline-block;
-        }
-
-        .list-value {
-            color: #f1f5f9;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
         .pane-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #60a5fa;
-            margin-bottom: 1.5rem;
+            letter-spacing: 0.15em;
+            color: #3b82f6;
+            margin-bottom: 1.25rem;
         }
 
-        /* User Profile Icon Placeholder */
-        .profile-avatar {
-            width: 60px; height: 60px;
-            border-radius: 50%;
+        .management-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.2);
             display: flex; align-items: center; justify-content: center;
-            color: #94a3b8;
-        }
-
-        /* Management Icon Buttons */
-        .management-btn {
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease;
             cursor: pointer;
         }
-        .management-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; color: white; transform: scale(1.05); }
-
-        /* Timeline for Device History */
-        .history-timeline { border-left: 2px dashed rgba(59, 130, 246, 0.3); padding-left: 1.5rem; margin-top: 1rem; position: relative; }
-        .timeline-dot { position: absolute; left: -5.5px; top: 3px; width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; }
-
-        /* General Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="p-4 lg:p-8">
-    <div class="max-w-[1700px] mx-auto w-full">
+<body class="p-6">
+    <div class="max-w-[1600px] mx-auto">
         
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 border-b border-slate-800 pb-8 sticky top-0 bg-[#090e17] z-50">
-            <div class="w-full md:w-auto">
+        <header class="flex justify-between items-center mb-10 pb-6 border-b border-gray-800">
+            <div>
                 <label>Asset Identity</label>
-                <input type="text" id="f1" class="text-4xl font-bold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0 tracking-tighter hover:text-blue-300 transition-colors" placeholder="Asset Tag (f1)">
-                <p class="text-slate-500 text-sm mt-1 font-medium">
-                    <span id="display-model" class="text-slate-300">Unknown Model (f7)</span> &bull; <span id="display-serial" class="text-slate-300">No Serial (f2)</span>
+                <input type="text" id="f1" class="text-3xl font-bold text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0" placeholder="f1">
+                <p class="text-gray-500 text-xs mt-1 font-semibold uppercase tracking-widest">
+                    <span id="display-model">Model</span> &bull; <span id="display-serial">Serial</span>
                 </p>
             </div>
-            <button onclick="saveInventory()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-blue-900/40 active:scale-95 whitespace-nowrap">
+            <button onclick="saveInventory()" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/40">
                 Save Asset Update
             </button>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 flex-grow">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <div class="lg:col-span-4 glass-panel">
-                <div class="w-full flex justify-center mb-6">
-                    <img src="https://static.acer.com/up/Resource/Acer/Laptops/Chromebook_3100/photogallery/20210217/Chromebook-3100- Acer-photogallery-01.png" alt="Laptop Placeholder" class="w-48 object-contain">
+            <div class="lg:col-span-3 glass-panel p-6">
+                <div class="flex justify-center py-6 mb-4">
+                    <svg class="w-32 h-32 text-gray-700" fill="currentColor" viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
                 </div>
+                
                 <h2 class="pane-title">Device Information</h2>
-                <div class="space-y-4 font-mono text-slate-100">
-                    <div><span class="list-label">Device Name:</span><input type="text" id="f3" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">Asset Tag:</span><input type="text" id="f1" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 text-blue-300"></div>
-                    <div><span class="list-label">OS Version:</span><input type="text" id="f15" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">CPU:</span><input type="text" id="f10" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">Memory:</span><div class="flex"><input type="text" id="f11" class="list-value border-none bg-transparent p-0 w-16 focus:ring-0 text-slate-200"><input type="text" id="f12" class="w-10 rounded-none border-none bg-transparent p-0 text-slate-500"></div></div>
-                    <div><span class="list-label">Storage:</span><div class="flex"><input type="text" id="f13" class="list-value border-none bg-transparent p-0 w-16 focus:ring-0 text-slate-200"><input type="text" id="f14" class="w-10 rounded-none border-none bg-transparent p-0 text-slate-500"></div></div>
-                    <div><span class="list-label">Serial Number:</span><input type="text" id="f2" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">Model:</span><input type="text" id="f7" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 text-slate-300"></div>
-                    <div><span class="list-label">Type:</span><input type="text" id="f5" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">Platform:</span><input type="text" id="f6" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0"></div>
-                    <div><span class="list-label">IP Address:</span><input type="text" id="f27" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 text-emerald-400 font-mono text-[11px]"></div>
-                    <div><span class="list-label">MAC Address (Wi-Fi):</span><input type="text" id="f28" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 font-mono text-[11px]"></div>
-                    <div><span class="list-label">Ethernet MAC:</span><input type="text" id="f29" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 font-mono text-[11px]"></div>
-                    <div><span class="list-label">Chrome Device ID:</span><textarea id="f30" class="list-value border-none bg-transparent p-0 w-full focus:ring-0 font-mono text-[9px] resize-none h-12"></textarea></div>
-                    <div><span class="list-label">Thundermac:</span><input type="text" id="f31" class="list-value border-none bg-transparent p-0 w-48 focus:ring-0 font-mono text-[11px]"></div>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Asset Tag</span>
+                        <input type="text" id="f1_dup" class="text-right border-none bg-transparent p-0 w-24 focus:ring-0 text-blue-300">
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">SN</span>
+                        <input type="text" id="f2" class="text-right border-none bg-transparent p-0 w-32 focus:ring-0">
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Platform</span>
+                        <input type="text" id="f6" class="text-right border-none bg-transparent p-0 w-24 focus:ring-0">
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800/50 pb-2">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">RAM</span>
+                        <div class="flex justify-end"><input type="text" id="f11" class="w-10 text-right bg-transparent border-none p-0"><input type="text" id="f12" class="w-8 text-gray-600 bg-transparent border-none p-0"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-5 flex flex-col gap-8">
-                
-                <div class="glass-sub-panel flex items-center gap-6">
-                    <div class="profile-avatar text-4xl">&bull;</div>
-                    <div class="flex-grow">
-                        <input type="text" id="f18" class="text-xl font-bold text-f1f5f9 bg-transparent border-none p-0 w-full focus:ring-0" placeholder="Owner Name (f18)">
-                        <div class="flex gap-2 mt-1 text-94a3b8 text-xs">
-                            <input type="text" id="f5" class="bg-transparent border-none p-0 w-16 focus:ring-0" readonly>&bull;
-                            <input type="text" id="f16" class="bg-transparent border-none p-0 w-24 focus:ring-0" placeholder="Building (f16)">&bull;
-                            <input type="text" id="f17" class="bg-transparent border-none p-0 w-16 focus:ring-0" placeholder="Room (f17)">
+            <div class="lg:col-span-5 space-y-8">
+                <section class="glass-panel p-6">
+                    <h2 class="pane-title">Owner & Assignment</h2>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-blue-900/30 flex items-center justify-center text-blue-400 font-bold">U</div>
+                        <div class="flex-grow">
+                            <input type="text" id="f18" class="bg-transparent border-none p-0 font-bold text-lg w-full focus:ring-0" placeholder="f18">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold"><span id="f16_txt">Building</span> &bull; <span id="f17_txt">Room</span></p>
                         </div>
                     </div>
-                </div>
-
-                <section class="glass-sub-panel space-y-4">
-                    <h2 class="text-[10px] font-bold text-blue-500 uppercase mb-4 tracking-[0.15em]">Student Assignment</h2>
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="input-group"><label>First Name (f33)</label><input type="text" id="f33"></div>
-                        <div class="input-group"><label>Last Name (f34)</label><input type="text" id="f34"></div>
+                        <div><label>First Name (f33)</label><input type="text" id="f33"></div>
+                        <div><label>Last Name (f34)</label><input type="text" id="f34"></div>
                     </div>
-                    <div class="input-group"><label>Student ID (f35)</label><input type="text" id="f35"></div>
                 </section>
 
-                <section class="glass-sub-panel flex-grow flex flex-col">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="pane-title mb-0">Device History</h2>
-                        <button class="bg-slate-700/50 hover:bg-slate-600/50 p-1.5 rounded-full text-blue-400">+</button>
-                    </div>
-                    <div class="flex-grow space-y-6 overflow-y-auto max-h-[300px]">
-                        <div class="history-timeline">
-                            <div class="timeline-dot"></div>
-                            <p class="text-[10px] text-94a3b8 font-bold">Latest Action Date</p>
-                            <textarea id="f24" rows="4" class="text-xs text-f1f5f9 leading-relaxed mt-2 p-3 bg-[#0a0f19] rounded-lg w-full resize-none border border-[#1d2d42]" placeholder="Action Notes (f24)..."></textarea>
-                            <p class="text-[10px] text-64748b mt-2">BY: TECHNICIAN (FMP)</p>
-                        </div>
-                    </div>
+                <section class="glass-panel p-6 flex-grow">
+                    <h2 class="pane-title">Action Notes (f24)</h2>
+                    <textarea id="f24" rows="6" class="bg-black/40 border-gray-800 rounded-lg p-3 text-xs w-full resize-none"></textarea>
                 </section>
             </div>
 
-            <div class="lg:col-span-3 flex flex-col gap-8">
-                
-                <section class="glass-sub-panel border border-yellow-500/10">
-                    <h2 class="pane-title text-yellow-300">Management Options</h2>
-                    <div class="flex gap-3 text-slate-500">
-                        <div class="management-btn text-blue-400" title="Future Action Decisions (f23)" onclick="alert('Decision required: f23.')">&#x2699;</div>
-                        <div class="management-btn" title="View Purchase Order (f20)" onclick="alert('Loading PO: f20.')">&#x2637;</div>
-                        <div class="management-btn" title="View Source Table Data (f36)" onclick="alert('Source: f36.')">&#x2614;</div>
+            <div class="lg:col-span-4 space-y-8">
+                <section class="glass-panel p-6">
+                    <h2 class="pane-title">Management Options</h2>
+                    <div class="flex gap-3">
+                        <div class="management-btn text-blue-400">&#x2699;</div>
+                        <div class="management-btn text-green-400">&#x2713;</div>
+                        <div class="management-btn text-yellow-400">&#x26A0;</div>
                     </div>
                 </section>
 
-                <section class="glass-sub-panel space-y-4">
+                <section class="glass-panel p-6">
                     <h2 class="pane-title">Lifecycle Details</h2>
-                    <div><label>Vendor (f9)</label><input type="text" id="f9"></div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div><label>Vendor (f9)</label><input type="text" id="f9"></div>
                         <div><label>Purchase Date (f21)</label><input type="text" id="f21"></div>
-                        <div><label>Age of Computer</label><input type="text" readonly class="list-value opacity-50 font-medium p-3 bg-[#0a0f19] rounded-lg border border-[#1d2d42]" value="Calculate in FMP"></div>
+                        <div><label>PO Number (f20)</label><input type="text" id="f20"></div>
+                        <div><label>Warranty (f22)</label><input type="text" id="f22"></div>
                     </div>
-                    <div><label>Cost (f19)</label><input type="text" id="f19"></div>
-                    <div><label>PO# (f20)</label><input type="text" id="f20"></div>
-                    <div><label>Warranty (f22)</label><input type="text" id="f22"></div>
-                </section>
-
-                <section class="glass-sub-panel border-t-4 border-emerald-500/20">
-                    <h2 class="text-[10px] font-bold text-94a3b8 uppercase mb-4 tracking-[0.15em]">Technical Notes (FMP)</h2>
-                    <textarea id="f26" rows="4" class="text-xs text-f1f5f9 resize-none" placeholder="No FMP notes (f26)."></textarea>
                 </section>
             </div>
         </div>
-
-        <footer class="mt-10 pt-8 border-t border-slate-800">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                <section class="glass-panel lg:col-span-8 p-6 rounded-2xl border border-dashed border-slate-700">
-                    <h2 class="pane-title mb-4 text-slate-400">General Administrative Notes (f25)</h2>
-                    <textarea id="f25" rows="5" class="text-sm text-f1f5f9 resize-none bg-[#0a0f19] w-full p-4 rounded-xl border border-[#1d2d42]" placeholder="General asset notes..."></textarea>
-                </section>
-                <section class="lg:col-span-4 glass-panel p-6 rounded-2xl border border-dashed border-slate-700 font-mono text-slate-500">
-                    <h3 class="text-[10px] font-bold text-slate-600 uppercase mb-4 tracking-[0.15em]">System Metadata</h3>
-                    <div class="space-y-3 text-[11px]">
-                        <div>Skyward Status (f32): <input type="text" id="f32" class="list-value border-none bg-transparent p-0 w-24 focus:ring-0 text-[11px] font-mono"></div>
-                        <div>Source Table (f36): <input type="text" id="f36" readonly class="list-value border-none bg-transparent p-0 w-24 focus:ring-0 text-[11px] opacity-60 font-mono"></div>
-                    </div>
-                </section>
-            </div>
-        </footer>
     </div>
 
     <script>
-        // Use standard RFC-compliant Base64-ready method
         const params = new URLSearchParams(window.location.search);
         
-        // Populate all 36 fields (f1 - f36)
+        // Populate fields f1 - f36
         for(let i=1; i<=36; i++) {
-            const fieldId = 'f' + i;
-            const el = document.getElementById(fieldId);
-            if(el) {
-                // Ensure data is decoded properly to handle spaces/hashes
-                el.value = decodeURIComponent(params.get('f' + i) || "");
+            const val = decodeURIComponent(params.get('f' + i) || "");
+            const el = document.getElementById('f' + i);
+            if(el) el.value = val;
+            
+            // Sync specific display-only elements
+            if(i === 1) { 
+                const dup = document.getElementById('f1_dup');
+                if(dup) dup.value = val;
             }
+            if(i === 16) { document.getElementById('f16_txt').innerText = val || "Building"; }
+            if(i === 17) { document.getElementById('f17_txt').innerText = val || "Room"; }
+            if(i === 7) { document.getElementById('display-model').innerText = val || "Model"; }
+            if(i === 2) { document.getElementById('display-serial').innerText = val || "Serial"; }
         }
 
-        // Update non-editable header displays
-        document.getElementById('display-model').innerText = decodeURIComponent(params.get('f7') || "Unknown Model");
-        document.getElementById('display-serial').innerText = decodeURIComponent(params.get('f2') || "No Serial");
-
-        // The exact same save logic: collect f1-f36 data and perform script
         function saveInventory() {
             const payload = {};
             for(let i=1; i<=36; i++) {
-                const fieldId = 'f' + i;
-                const el = document.getElementById(fieldId);
-                if(el) payload[fieldId] = el.value;
+                const el = document.getElementById('f' + i);
+                if(el) payload['f' + i] = el.value;
             }
-
             if (window.FileMaker) {
-                // Name of your script: Locker_Inventory_Update
                 FileMaker.PerformScript("Locker_Inventory_Update", JSON.stringify(payload));
             } else {
-                console.error("FileMaker Bridge not found.");
-                alert("Cannot save: Not run inside FileMaker Web Viewer.");
+                alert("FileMaker Bridge not found.");
             }
         }
     </script>
