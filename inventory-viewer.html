@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locker | Tech Inventory</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        :root { font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            -webkit-font-smoothing: antialiased;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+        }
+
+        .glass { 
+            background: rgba(30, 41, 59, 0.4); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+
+        input, textarea, select { 
+            background: rgba(15, 23, 42, 0.8) !important; 
+            border: 1px solid #334155 !important;
+            color: #f8fafc !important;
+            padding: 0.6rem 0.8rem !important;
+            border-radius: 0.6rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s ease;
+            font-size: 0.85rem !important;
+        }
+
+        input:focus, textarea:focus, select:focus { 
+            border-color: #3b82f6 !important; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        label { 
+            color: #64748b; 
+            font-size: 0.65rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            margin-bottom: 0.35rem; 
+            display: block; 
+        }
+
+        .section-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #3b82f6;
+            margin-bottom: 1.5rem;
+            border-left: 2px solid #3b82f6;
+            padding-left: 0.75rem;
+        }
+    </style>
+</head>
+<body class="p-6 lg:p-10">
+    <div class="max-w-[1400px] mx-auto">
+        
+        <header class="flex justify-between items-end mb-10 border-b border-slate-800 pb-8">
+            <div class="flex-grow">
+                <label>Asset Tag</label>
+                <input type="text" id="AssetTag" class="text-4xl font-black text-blue-400 bg-transparent border-none p-0 w-full focus:ring-0 tracking-tighter">
+                <div class="flex gap-4 mt-2 text-slate-500 text-xs font-semibold">
+                    <span>Model: <span id="display-model" class="text-slate-300"></span></span>
+                    <span>&bull;</span>
+                    <span>Serial: <span id="display-serial" class="text-slate-300"></span></span>
+                </div>
+            </div>
+            <button onclick="saveInventory()" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-3 rounded-xl font-bold transition-all shadow-xl shadow-blue-900/30 active:scale-95">
+                Update Asset
+            </button>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <section class="glass p-6 rounded-2xl space-y-4">
+                <h2 class="section-title">Core Specifications</h2>
+                <div><label>Device Name</label><input type="text" id="Name"></div>
+                <div><label>Full Name</label><input type="text" id="NameFull"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label>Type</label><input type="text" id="Type"></div>
+                    <div><label>Platform</label><input type="text" id="Platform"></div>
+                </div>
+                <div><label>Manufacturer</label><input type="text" id="Manufacturer"></div>
+                <div><label>CPU Model</label><input type="text" id="CPU"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label>RAM</label><div class="flex"><input type="text" id="RAM" class="rounded-r-none"><input type="text" id="RAMUnits" class="w-16 rounded-l-none border-l-0 text-slate-500"></div></div>
+                    <div><label>Storage</label><div class="flex"><input type="text" id="HD" class="rounded-r-none"><input type="text" id="HDUnits" class="w-16 rounded-l-none border-l-0 text-slate-500"></div></div>
+                </div>
+                <div><label>OS Version</label><input type="text" id="OS"></div>
+            </section>
+
+            <section class="glass p-6 rounded-2xl space-y-4">
+                <h2 class="section-title">Location & Assignment</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label>Building</label><input type="text" id="Building"></div>
+                    <div><label>Room</label><input type="text" id="RoomName"></div>
+                </div>
+                <div><label>Owner / User</label><input type="text" id="Owner"></div>
+                <div class="pt-4 border-t border-slate-800">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase mb-3">Student Assignment</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label>First Name</label><input type="text" id="StuFName"></div>
+                        <div><label>Last Name</label><input type="text" id="StuLName"></div>
+                    </div>
+                    <div class="mt-3"><label>Student ID</label><input type="text" id="StuID"></div>
+                </div>
+                <div><label>Device ID (Chromebook)</label><input type="text" id="ChromebookDeviceID" class="font-mono text-[10px]"></div>
+            </section>
+
+            <section class="glass p-6 rounded-2xl space-y-4">
+                <h2 class="section-title">Purchasing & Lifecycle</h2>
+                <div><label>Vendor</label><input type="text" id="Vendor"></div>
+                <div><label>Purchase Order (PO)</label><input type="text" id="PO"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label>Cost</label><input type="text" id="Cost"></div>
+                    <div><label>Purchase Date</label><input type="text" id="PurchaseDate"></div>
+                </div>
+                <div><label>Warranty Info</label><input type="text" id="Warranty"></div>
+                <div class="pt-4 border-t border-slate-800">
+                    <label>Future Action Required</label>
+                    <select id="FutureAction">
+                        <option value="">None</option>
+                        <option value="Replace">Replace</option>
+                        <option value="Repair">Repair</option>
+                        <option value="Surplus">Surplus</option>
+                    </select>
+                </div>
+                <div><label>Action Notes</label><textarea id="ActionNotes" rows="3"></textarea></div>
+            </section>
+
+            <section class="glass p-6 rounded-2xl space-y-4">
+                <h2 class="section-title">Network & System Admin</h2>
+                <div><label>IP Address</label><input type="text" id="IP" class="font-mono"></div>
+                <div><label>MAC Address (Wi-Fi)</label><input type="text" id="MACAddress" class="font-mono uppercase"></div>
+                <div><label>Ethernet MAC</label><input type="text" id="EthernetMAC" class="font-mono uppercase"></div>
+                <div><label>Thunderbolt/Other MAC</label><input type="text" id="Thundermac" class="font-mono uppercase"></div>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-slate-800">
+                    <div>
+                        <label>Skyward Sync</label>
+                        <select id="NotInSkyward">
+                            <option value="No">In Skyward</option>
+                            <option value="Yes">Not in Skyward</option>
+                        </select>
+                    </div>
+                    <div><label>Source Table</label><input type="text" id="SourceTable" readonly class="opacity-50"></div>
+                </div>
+                <div><label>Technical Notes (FMP)</label><textarea id="FMPNotes" rows="2" class="text-xs"></textarea></div>
+                <div><label>General Notes</label><textarea id="Notes" rows="2" class="text-xs"></textarea></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const fields = ["AssetTag","Serial","Name","NameFull","Type","Platform","Model","Manufacturer","Vendor","CPU","RAM","RAMUnits","HD","HDUnits","OS","Building","RoomName","Owner","Cost","PO","PurchaseDate","Warranty","FutureAction","ActionNotes","Notes","FMPNotes","IP","MACAddress","EthernetMAC","ChromebookDeviceID","Thundermac","NotInSkyward","StuFName","StuLName","StuID","SourceTable"];
+
+        // Initialize Fields
+        fields.forEach(f => {
+            const val = decodeURIComponent(params.get(f) || "");
+            const el = document.getElementById(f);
+            if (el) el.value = val;
+        });
+
+        // Update Read-only Displays
+        document.getElementById('display-model').innerText = params.get('Model') || "N/A";
+        document.getElementById('display-serial').innerText = params.get('Serial') || "N/A";
+
+        function saveInventory() {
+            const data = {};
+            fields.forEach(f => {
+                const el = document.getElementById(f);
+                if (el) data[f] = el.value;
+            });
+
+            if (window.FileMaker) {
+                FileMaker.PerformScript("Locker_Inventory_Update", JSON.stringify(data));
+            } else {
+                alert("FileMaker Bridge not found.");
+            }
+        }
+    </script>
+</body>
+</html>
