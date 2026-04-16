@@ -3,166 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repair Request Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: system-ui, -apple-system, sans-serif;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header {
-            border-bottom: 1px solid #334155;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-        }
-        .title { color: #60a5fa; font-size: 24px; font-weight: bold; }
-        .meta { color: #94a3b8; font-size: 14px; margin-top: 5px; }
-        .badge {
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border: 1px solid;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .badge-pending { background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.5); }
-        .badge-done    { background: rgba(34,197,94,0.1);  color: #4ade80; border-color: rgba(34,197,94,0.5); }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-        }
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
-        }
-        .card {
-            background: rgba(30,41,59,0.7);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 12px;
-        }
-        .label {
-            color: #64748b;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .data-point { margin-bottom: 14px; font-size: 14px; line-height: 1.4; }
-        .data-point span { color: #64748b; margin-right: 4px; }
-        .problem-box { border-left: 4px solid #ef4444; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
-        .fix-box     { border-left: 4px solid #22c55e; border-radius: 0 12px 12px 0; }
-        .problem-text { font-size: 16px; line-height: 1.6; color: #f1f5f9; margin-top: 8px; }
-        .empty { color: #475569; font-style: italic; }
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #475569;
-        }
-        .no-data h2 { color: #64748b; margin-bottom: 8px; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; min-height: 100vh; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
-<body>
-<div class="container" id="app">
-    <div class="no-data">
-        <h2>No record data</h2>
-        <p>This page is meant to be opened from FileMaker with record parameters.</p>
+<body class="p-6">
+    <div class="max-w-5xl mx-auto" id="content">
+        <div class="flex justify-between items-start mb-8 border-b border-slate-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-blue-400 tracking-tight" id="view-item">Loading...</h1>
+                <p class="text-slate-400 text-sm mt-1">
+                    Report #<span id="view-report"></span> • <span id="view-date"></span>
+                </p>
+            </div>
+            <div id="status-badge" class="px-4 py-1.5 rounded-lg text-xs font-bold uppercase border"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-sm">
+            <div class="space-y-6">
+                <div class="glass p-5 rounded-2xl">
+                    <h2 class="text-[10px] font-bold tracking-widest text-blue-500 uppercase mb-4">Technical Details</h2>
+                    <p class="mb-2"><span class="text-slate-500">SN:</span> <span id="view-sn" class="font-mono"></span></p>
+                    <p class="mb-2"><span class="text-slate-500">Machine:</span> <span id="view-machine"></span></p>
+                    <p class="mb-2"><span class="text-slate-500">Location:</span> <span id="view-location"></span></p>
+                    <p><span class="text-slate-500">Room:</span> <span id="view-room"></span></p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-2" id="view-problem-type">Issue</h3>
+                    <p class="text-lg text-slate-100 leading-relaxed" id="view-description"></p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    function getParams() {
-        const params = {};
-        const search = window.location.search.substring(1);
-        if (!search) return params;
-        search.split('&').forEach(function(pair) {
-            const parts = pair.split('=');
-            if (parts[0]) {
-                params[decodeURIComponent(parts[0])] = decodeURIComponent((parts[1] || '').replace(/\+/g, ' '));
-            }
-        });
-        return params;
-    }
+    <script>
+        // Extract and Decode URL Parameters
+        const params = new URLSearchParams(window.location.search);
+        
+        function getParam(name) {
+            const value = params.get(name) || "";
+            return decodeURIComponent(value); // This fixes the %20 and %2F issues
+        }
 
-    function val(v) {
-        return v && v.trim() ? v.trim() : null;
-    }
+        // Map Data to UI
+        document.getElementById('view-item').innerText = getParam('item');
+        document.getElementById('view-report').innerText = getParam('report');
+        document.getElementById('view-date').innerText = getParam('date');
+        document.getElementById('view-sn').innerText = getParam('sn');
+        document.getElementById('view-machine').innerText = getParam('machine');
+        document.getElementById('view-location').innerText = getParam('location');
+        document.getElementById('view-room').innerText = getParam('room');
+        document.getElementById('view-problem-type').innerText = "ISSUE: " + getParam('problem');
+        document.getElementById('view-description').innerText = getParam('description');
 
-    function esc(str) {
-        if (!str) return '';
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
-    function render() {
-        const p = getParams();
-
-        const item        = val(p.item)        || 'Untitled Repair';
-        const report      = val(p.report)      || '—';
-        const date        = val(p.date)        || '—';
-        const completed   = val(p.completed);
-        const sn          = val(p.sn)          || '—';
-        const machine     = val(p.machine)     || '—';
-        const location    = val(p.location)    || '—';
-        const room        = val(p.room)        || '—';
-        const problem     = val(p.problem)     || 'General';
-        const description = val(p.description) || '';
-        const fix         = val(p.fix)         || '';
-
-        const isDone = completed && completed.toLowerCase() === 'yes';
-        const badgeClass = isDone ? 'badge-done' : 'badge-pending';
-        const badgeText  = isDone ? 'Completed' : 'Pending';
-
-        const hasParams = Object.keys(p).length > 0;
-        if (!hasParams) return;
-
-        document.getElementById('app').innerHTML = `
-            <div class="header">
-                <div>
-                    <div class="title">${esc(item)}</div>
-                    <div class="meta">Report #${esc(report)} &bull; ${esc(date)}</div>
-                </div>
-                <div class="badge ${badgeClass}">${badgeText}</div>
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <span class="label">Technical Details</span>
-                    <div class="data-point"><span>SN:</span>${esc(sn)}</div>
-                    <div class="data-point"><span>Machine:</span>${esc(machine)}</div>
-                    <div class="data-point"><span>Location:</span>${esc(location)}</div>
-                    <div class="data-point"><span>Room:</span>${esc(room)}</div>
-                </div>
-                <div>
-                    <div class="card problem-box">
-                        <span class="label">Issue: ${esc(problem)}</span>
-                        <div class="problem-text">${description ? esc(description) : '<span class="empty">No description provided.</span>'}</div>
-                    </div>
-                    ${fix ? `
-                    <div class="card fix-box">
-                        <span class="label">Resolution</span>
-                        <div class="problem-text">${esc(fix)}</div>
-                    </div>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    render();
-</script>
+        // Handle Status Badge
+        const completed = getParam('completed');
+        const badge = document.getElementById('status-badge');
+        if (completed.toLowerCase() === 'yes') {
+            badge.innerText = 'COMPLETED';
+            badge.className += ' bg-green-500/10 text-green-400 border-green-500/50';
+        } else {
+            badge.innerText = 'PENDING';
+            badge.className += ' bg-amber-500/10 text-amber-400 border-amber-500/50';
+        }
+    </script>
 </body>
 </html>
